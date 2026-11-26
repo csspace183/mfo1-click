@@ -44,7 +44,7 @@
     <h1>Нужно выключить VPN</h1>
     <p id="vpn-reason">Сайт доступен только для жителей <b>России</b>. Пожалуйста, отключите VPN и нажмите кнопку ниже.</p>
     <a href="javascript:location.reload();" class="btn">Я отключил VPN, продолжить</a>
-    <a href="/mfo.html" class="secondary-link">← Назад</a>
+    <a href="/mfo" id="back-link" class="secondary-link">← Назад</a>
   </div>
 
  <script>
@@ -110,6 +110,7 @@
           const doc = new DOMParser().parseFromString(html, 'text/html');
           const link = doc.querySelector(`a[href="/${slug}"], a[href="${slug}"]`);
           if (link) {
+            document.getElementById('back-link').href = pageUrl; // <-- ВОТ ЭТА СТРОКА
             const card = link.closest('.card');
             if (card) {
               const cardTitle = card.querySelector('.logo-name');
