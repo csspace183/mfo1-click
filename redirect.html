@@ -101,7 +101,7 @@
       const domain = new URL(targetUrl).hostname;
       const fallbackIcon = 'https://google.com' + domain;
 
-      const pagesToTry = ['/mfo.html', '/mfo', '/'];
+      const pagesToTry = ['/mfo.html', '/mfo', '/', '/debit', '/credit'];
       for (const pageUrl of pagesToTry) {
         try {
           const res = await fetch(pageUrl, { cache: 'no-store' });
