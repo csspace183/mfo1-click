@@ -47,7 +47,7 @@
     <a href="/mfo.html" class="secondary-link">← Назад</a>
   </div>
 
-  <script>
+ <script>
     const OFFERS = {
       // МФО ТОП 8
       'zaymer': 'https://zaymer.ru',
@@ -60,7 +60,7 @@
       'smartcash': 'https://smartcash.ru',
       'turbozaim': 'https://turbozaim.ru',
       'srochnodengi': 'https://srochnodengi.ru',
-      //ОСТАЛЬНЫЕ МФО
+      // ОСТАЛЬНЫЕ МФО
       'dengisrazy': 'https://dengisrazy.ru',
       'skelamoney': 'https://skelamoney.ru',
       'dobrozaim': 'https://dobrozaim.ru',
@@ -71,7 +71,6 @@
       'krediska': 'https://krediska.ru',
       'webbankir': 'https://webbankir.com',
       'credit7': 'https://credit7.ru',
-        
       // ДЕБЕТОВЫЕ КАРТЫ
       "/t-black": "https://www.tbank.ru/baf/AaAszPy3LMI",
       "/vtb-mir": "https://rfnd.io/t/crxh3/?pid=92&erid=2SDnjeHDi24",
@@ -115,7 +114,7 @@
             if (card) {
               const cardTitle = card.querySelector('.logo-name');
               const cardLogo = card.querySelector('.mfo-logo');
-              nameEl.innerText = cardTitle ? cardTitle.innerText.trim() : slug.toUpperCase();
+              nameEl.innerText = cardTitle ? cardTitle.innerText.trim() : slug.replace('/', '').toUpperCase();
 
               const src = cardLogo ? cardLogo.getAttribute('src') : '';
               logoImg.onerror = () => {
@@ -129,7 +128,7 @@
         } catch (e) {}
       }
 
-      nameEl.innerText = slug.toUpperCase();
+      nameEl.innerText = slug.replace('/', '').toUpperCase();
       logoImg.onerror = () => { logoImg.style.display = 'none'; };
       logoImg.src = fallbackIcon;
     }
@@ -145,22 +144,30 @@
       document.getElementById('vpn-box').classList.remove('hidden');
     }
 
+    async function fetchWithTimeout(url, ms = 2500) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      try {
+        const res = await fetch(url, { cache: 'no-store', signal: controller.signal });
+        return await res.json();
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     async function getCountryCode() {
       try {
-        const res1 = await fetch('https://country.is', { cache: 'no-store' });
-        const data1 = await res1.json();
+        const data1 = await fetchWithTimeout('https://country.is');
         if (data1 && data1.country) return data1.country.toUpperCase();
       } catch (e) {}
 
       try {
-        const res2 = await fetch('https://ip2location.io', { cache: 'no-store' });
-        const data2 = await res2.json();
+        const data2 = await fetchWithTimeout('https://ipwho.is');
         if (data2 && data2.country_code) return data2.country_code.toUpperCase();
       } catch (e) {}
 
       try {
-        const res3 = await fetch('https://ipwho.is', { cache: 'no-store' });
-        const data3 = await res3.json();
+        const data3 = await fetchWithTimeout('https://ip2location.io');
         if (data3 && data3.country_code) return data3.country_code.toUpperCase();
       } catch (e) {}
 
@@ -183,5 +190,3 @@
       window.location.replace(targetUrl);
     }
   </script>
-</body>
-</html>
